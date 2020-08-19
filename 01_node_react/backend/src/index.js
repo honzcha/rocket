@@ -34,12 +34,12 @@ function validateProjectID(request, reponse, next) {
 }
 
 app.use(logRequests);
-app.use("/projects/:id", validateProjectID);
+app.use("/repositories/:id", validateProjectID);
 
 // You can also add the middleware inside the
 // app.get("/projects", logRequests, middleware2, middleware3(request, response) => {
 
-app.get("/projects", (request, response) => {
+app.get("/repositories", (request, response) => {
   const { title } = request.query;
 
   const results = title
@@ -49,7 +49,7 @@ app.get("/projects", (request, response) => {
   return response.json(results);
 });
 
-app.post("/projects", (request, response) => {
+app.post("/repositories", (request, response) => {
   const { title, owner } = request.body;
 
   const project = { id: uuid(), title, owner };
@@ -61,7 +61,7 @@ app.post("/projects", (request, response) => {
   return response.json(project);
 });
 
-app.put("/projects/:id", (request, response) => {
+app.put("/repositories/:id", (request, response) => {
   const { id } = request.params;
   const { title, owner } = request.body;
 
@@ -77,7 +77,7 @@ app.put("/projects/:id", (request, response) => {
   return response.json(project);
 });
 
-app.delete("/projects/:id", (request, response) => {
+app.delete("/repositories/:id", (request, response) => {
   const { id } = request.params;
 
   const projectIndex = projects.findIndex((project) => project.id === id);
