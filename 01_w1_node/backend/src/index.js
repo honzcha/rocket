@@ -8,12 +8,30 @@ app.use(express.json());
 
 const projects = [];
 
+function logRequests(request, response, next) {
+  const { method, url } = request;
+
+  const logLabel = `[${method.toUpperCase()}] ${url}`;
+
+  console.log(logLabel);
+
+  //without adding next here, the middleware will stop anything from happening after.
+  return next();
+}
+
+// app.use(logRequests);
+
+// You can also add the middlewares inside the 
+// app.get("/projects", logRequests, middleware2, middleware3(request, response) => {
+
 app.get("/projects", (request, response) => {
-  // const { title, owner } = request.query;
+  const { title } = request.query;
 
-  // console.log(title, owner);
+  const results = title
+    ? projects.filter((project) => project.title.includes(title))
+    : projects;
 
-  return response.json(projects);
+  return response.json(results);
 });
 
 app.post("/projects", (request, response) => {
@@ -54,6 +72,7 @@ app.delete("/projects/:id", (request, response) => {
   }
 
   projects.splice(projectIndex, 1);
+
   return response.status(204).send();
 });
 
