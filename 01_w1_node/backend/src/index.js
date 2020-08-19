@@ -1,6 +1,7 @@
 const express = require("express");
 
-const { uuid } = require("uuidv4");
+const { uuid, isUuid } = require("uuidv4");
+const { response } = require("express");
 
 const app = express();
 
@@ -19,9 +20,21 @@ function logRequests(request, response, next) {
   return next();
 }
 
-// app.use(logRequests);
+function validateProjectID(request, reponse, next) {
+  const { id } = request.params;
 
-// You can also add the middlewares inside the 
+  if (!isUuid(id)) {
+    //use return here so that if it comes to this point, it gives an error and does not run anything after this
+    return response.status(400).json({ error: "Invalid project ID" });
+  }
+
+  return next();
+}
+
+app.use(logRequests);
+app.use("/projects/:id", validateProjectID);
+
+// You can also add the middleware inside the
 // app.get("/projects", logRequests, middleware2, middleware3(request, response) => {
 
 app.get("/projects", (request, response) => {
