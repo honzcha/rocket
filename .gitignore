@@ -2,6 +2,12 @@
 **/node_modules
 **/.pnp
 **/.pnp.js
+**/*.idea/
+**/*.vscode/
+**/node_modules/
+**/build/
+**/tmp/
+**/temp/
 
 # testing
 **/coverage
@@ -64,6 +70,7 @@ build/
 
 # node.js
 #
+
 **/node_modules/
 **/npm-debug.log
 **/yarn-error.log
