@@ -46,13 +46,13 @@ yarn-error.log*
 #
 build/
 **/*.pbxuser
-**/*!default.pbxuser
+!**/*default.pbxuser
 **/*.mode1v3
-**/*!default.mode1v3
+!**/*default.mode1v3
 **/*.mode2v3
-**/*!default.mode2v3
+!**/*default.mode2v3
 **/*.perspectivev3
-**/*!default.perspectivev3
+!**/*default.perspectivev3
 **/xcuserdata
 **/*.xccheckout
 **/*.moved-aside
@@ -80,7 +80,7 @@ build/
 **/buck-out/
 **/\.buckd/
 **/*.keystore
-**/*!debug.keystore
+!**/*debug.keystore
 
 # fastlane
 #
