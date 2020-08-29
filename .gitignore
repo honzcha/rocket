@@ -6,7 +6,8 @@
 **/*.vscode/
 **/node_modules/
 **/build/
-**/tmp/
+**/tmp/*
+**!/tmp/.gitkeep
 **/temp/
 
 # testing
