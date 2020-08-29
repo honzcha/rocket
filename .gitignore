@@ -7,7 +7,7 @@
 **/node_modules/
 **/build/
 **/tmp/*
-**!/tmp/.gitkeep
+**/*!.gitkeep
 **/temp/
 
 # testing
