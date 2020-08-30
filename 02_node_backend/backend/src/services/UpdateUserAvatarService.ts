@@ -3,6 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import User from '../models/User';
 import uploadConfig from '../config/upload';
+import AppError from '../errors/AppError';
 
 interface Request {
   user_id: string;
@@ -15,7 +16,7 @@ class UpdateUserAvatarService {
     const user = await usersRepository.findOne(user_id);
     // console.log(user?.avatar);
     if (!user) {
-      throw new Error('Only authenticated users can change avatar');
+      throw new AppError('Only authenticated users can change avatar', 401);
     }
 
     // first i am checking if the user already has an avatar, so i can delete before changing to the new one

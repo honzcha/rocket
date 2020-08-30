@@ -3,6 +3,7 @@ import { startOfHour } from 'date-fns';
 import { getCustomRepository } from 'typeorm';
 import Appointment from '../models/Appointment';
 import AppointmentsRepository from '../repositories/AppointmentsRepository';
+import AppError from '../errors/AppError';
 
 // DTO
 interface Request {
@@ -25,7 +26,7 @@ class CreateAppointmentService {
     // Service does not have access to the request/response data from express. That is why here we return an error and not a status(400)
 
     if (findAppointmentInSameDate) {
-      throw Error('This appointment is already taken');
+      throw new AppError('This appointment is already taken');
     }
 
     const appointment = appointmentsRepository.create({
