@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import { IconBaseProps } from 'react-icons';
 import { useField } from '@unform/core';
-import {} from 'yup'
 
 import { Container } from './styles';
 
