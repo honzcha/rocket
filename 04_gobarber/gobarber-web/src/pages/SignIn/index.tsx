@@ -6,11 +6,12 @@ import * as Yup from 'yup';
 
 import { Container, Content, Background } from './styles';
 import getValidationErrors from '../../utils/getValidationErrors';
-import { AuthContext } from '../../context/AuthContext';
+import { useAuth } from '../../hooks/auth';
 
 import logoImg from '../../assets/logo.svg';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
+import { useToast } from '../../hooks/toast';
 
 interface SignInFormData {
   email: string;
@@ -20,7 +21,8 @@ interface SignInFormData {
 const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
-  const { signIn, user } = useContext(AuthContext);
+  const { signIn } = useAuth();
+  const { addToast } = useToast();
 
   const handleSubmit = useCallback(
     async (data: SignInFormData) => {
@@ -35,17 +37,26 @@ const SignIn: React.FC = () => {
         });
 
         await schema.validate(data, { abortEarly: false });
-        signIn({
+
+        await signIn({
           email: data.email,
           password: data.password,
         });
       } catch (err) {
-        const errors = getValidationErrors(err);
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err);
 
-        formRef.current?.setErrors(errors);
+          formRef.current?.setErrors(errors);
+        }
+
+        addToast({
+          type: 'error',
+          title: 'Authentication Error',
+          description: 'Login error, check credentials',
+        });
       }
     },
-    [signIn],
+    [signIn, addToast],
   );
 
   return (
