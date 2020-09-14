@@ -4,7 +4,8 @@ import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
 
-import { Container, Content, Background } from './styles';
+import { Link } from 'react-router-dom';
+import { Container, Content, Background, AnimationContainer } from './styles';
 import getValidationErrors from '../../utils/getValidationErrors';
 import { useAuth } from '../../hooks/auth';
 
@@ -62,28 +63,30 @@ const SignIn: React.FC = () => {
   return (
     <Container>
       <Content>
-        <img src={logoImg} alt="logo" />
-        <Form ref={formRef} onSubmit={handleSubmit}>
-          <h1>Login</h1>
+        <AnimationContainer>
+          <img src={logoImg} alt="logo" />
+          <Form ref={formRef} onSubmit={handleSubmit}>
+            <h1>Login</h1>
 
-          <Input name="email" icon={FiMail} placeholder="Email" />
+            <Input name="email" icon={FiMail} placeholder="Email" />
 
-          <Input
-            name="password"
-            icon={FiLock}
-            type="password"
-            placeholder="Password"
-          />
+            <Input
+              name="password"
+              icon={FiLock}
+              type="password"
+              placeholder="Password"
+            />
 
-          <Button type="submit">Sign In</Button>
+            <Button type="submit">Sign In</Button>
 
-          <a href="forgot">Forgot my password</a>
-        </Form>
+            <a href="forgot">Forgot my password</a>
+          </Form>
 
-        <a href="account">
-          <FiLogIn />
-          Create Account
-        </a>
+          <Link to="/signup">
+            <FiLogIn />
+            Create Account
+          </Link>
+        </AnimationContainer>
       </Content>
       <Background />
     </Container>
