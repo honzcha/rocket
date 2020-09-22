@@ -1,6 +1,10 @@
 import React from 'react';
-import { Container } from './styles';
+import { Container, ButtonText } from './styles';
 
-const Button: React.FC = () => <Container />;
+const Button: React.FC = ({ children }) => (
+  <Container>
+    <ButtonText>{children}</ButtonText>
+  </Container>
+);
 
 export default Button;
