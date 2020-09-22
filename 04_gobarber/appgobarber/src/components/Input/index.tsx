@@ -1,6 +1,15 @@
 import React from 'react';
-import { Container } from './styles';
+import { TextInputProps } from 'react-native';
+import { Container, TextInput } from './styles';
 
-const Input: React.FC = () => <Container />;
+interface InputProps extends TextInputProps {
+  name: string;
+  icon: string;
+}
+const Input: React.FC<InputProps> = () => (
+  <Container>
+    <TextInput />
+  </Container>
+);
 
 export default Input;
