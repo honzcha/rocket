@@ -7,6 +7,7 @@ import {
   Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import { useNavigation } from '@react-navigation/native';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -18,11 +19,12 @@ import {
   Title,
   ForgotPassword,
   ForgotPasswordText,
-  CreateAccountButtonText,
-  CreateAccountButton,
+  BackToSignInButtonText,
+  BackToSignInButton,
 } from './styles';
 
-const SignIn: React.FC = () => {
+const SignUp: React.FC = () => {
+  navigation = useNavigation();
   return (
     <>
       <KeyboardAvoidingView
@@ -37,8 +39,9 @@ const SignIn: React.FC = () => {
           <Container>
             <Image source={logoImg} />
             <View>
-              <Title>Login</Title>
+              <Title>Create Account</Title>
             </View>
+            <Input name="name" icon="user" placeholder="Name" />
             <Input name="email" icon="mail" placeholder="E-mail" />
             <Input name="password" icon="lock" placeholder="Password" />
             <Button
@@ -48,27 +51,20 @@ const SignIn: React.FC = () => {
             >
               Enter
             </Button>
-            <ForgotPassword
-              onPress={() => {
-                console.log('forgot password button');
-              }}
-            >
-              <ForgotPasswordText>Forgot password</ForgotPasswordText>
-            </ForgotPassword>
           </Container>
         </ScrollView>
       </KeyboardAvoidingView>
 
-      <CreateAccountButton
+      <BackToSignInButton
         onPress={() => {
-          console.log('fcreate account button');
+          navigation.navigate('SignIn');
         }}
       >
-        <Icon name="log-in" size={20} color="#ff9000" />
-        <CreateAccountButtonText>Create Account</CreateAccountButtonText>
-      </CreateAccountButton>
+        <Icon name="arrow-left" size={20} color="#fff" />
+        <BackToSignInButtonText>Sign In</BackToSignInButtonText>
+      </BackToSignInButton>
     </>
   );
 };
 
-export default SignIn;
+export default SignUp;
