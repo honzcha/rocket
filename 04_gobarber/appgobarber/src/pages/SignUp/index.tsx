@@ -42,6 +42,7 @@ const SignUp: React.FC = () => {
               <Title>Create Account</Title>
             </View>
             <Input name="name" icon="user" placeholder="Name" />
+
             <Input name="email" icon="mail" placeholder="E-mail" />
             <Input name="password" icon="lock" placeholder="Password" />
             <Button
