@@ -60,7 +60,7 @@ const SignUp: React.FC = () => {
                 icon="user"
                 placeholder="Name"
                 returnKeyType="next"
-                onSubmitEditing={() => emailInputRef.current?.focus()}
+                onSubmitEditing={() => y}
               />
 
               <Input
