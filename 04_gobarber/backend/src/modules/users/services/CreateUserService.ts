@@ -1,33 +1,47 @@
-import { getRepository } from 'typeorm';
-import { hash } from 'bcryptjs';
+import { injectable, inject } from 'tsyringe';
+
 import AppError from '@shared/errors/AppError';
+import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
+import IUsersRepository from '../repositories/IUsersRepository';
+import IHashProvider from '../providers/HashProvider/models/IHashProvider';
+
 import User from '../infra/typeorm/entities/User';
 
-interface Request {
+interface IRequest {
   name: string;
   email: string;
   password: string;
 }
-class CreateUserService {
-  // to create user need name, email, and password -> to tere is a need to create an interface
-  public async execute({ name, email, password }: Request): Promise<User> {
-    const usersRepository = getRepository(User);
 
-    const checkUserExists = await usersRepository.findOne({ where: { email } });
+@injectable()
+class CreateUserService {
+  constructor(
+    @inject('UsersRepository')
+    private usersRepository: IUsersRepository,
+
+    @inject('HashProvider')
+    private hashProvider: IHashProvider,
+
+    @inject('CacheProvider')
+    private cacheProvider: ICacheProvider,
+  ) {}
+
+  public async execute({ name, email, password }: IRequest): Promise<User> {
+    const checkUserExists = await this.usersRepository.findByEmail(email);
+
     if (checkUserExists) {
-      // the service does not access to the response, it cant do a http answer, so we have to throw an error
-      throw new AppError('Email addresss already used');
+      throw new AppError('Email address already used.');
     }
 
-    const hashedPassword = await hash(password, 8);
+    const hashedPassword = await this.hashProvider.generateHash(password);
 
-    const user = usersRepository.create({
+    const user = await this.usersRepository.create({
       name,
       email,
       password: hashedPassword,
     });
 
-    await usersRepository.save(user);
+    await this.cacheProvider.invalidatePrefix('providers-list');
 
     return user;
   }

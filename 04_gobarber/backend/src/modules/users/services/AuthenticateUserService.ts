@@ -1,45 +1,60 @@
-import { getRepository } from 'typeorm';
-import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
-import AuthConfig from '@config/auth';
+import authConfig from '@config/auth';
+import { injectable, inject } from 'tsyringe';
+
 import AppError from '@shared/errors/AppError';
+import IUsersRepository from '../repositories/IUsersRepository';
+import IHashProvider from '../providers/HashProvider/models/IHashProvider';
+
 import User from '../infra/typeorm/entities/User';
 
-interface Request {
+interface IRequest {
   email: string;
   password: string;
 }
 
-interface Response {
+interface IResponse {
   user: User;
   token: string;
 }
-class AuthenticateUserService {
-  public async execute({ email, password }: Request): Promise<Response> {
-    const usersRepository = getRepository(User);
 
-    const user = await usersRepository.findOne({ where: { email } });
+@injectable()
+class AuthenticateUserService {
+  constructor(
+    @inject('UsersRepository')
+    private usersRepository: IUsersRepository,
+
+    @inject('HashProvider')
+    private hashProvider: IHashProvider,
+  ) {}
+
+  public async execute({ email, password }: IRequest): Promise<IResponse> {
+    const user = await this.usersRepository.findByEmail(email);
 
     if (!user) {
-      throw new AppError('Incorrect email/password combination', 401);
+      throw new AppError('Incorrect email/password combination.', 401);
     }
 
-    const passwordMatched = await compare(password, user.password);
+    const passwordMatched = await this.hashProvider.compareHash(
+      password,
+      user.password,
+    );
 
     if (!passwordMatched) {
-      throw new AppError('Incorrect email/password combination', 401);
+      throw new AppError('Incorrect email/password combination.', 401);
     }
 
-    const { secret, expiresIn } = AuthConfig.jwt;
+    const { secret, expiresIn } = authConfig.jwt;
 
     const token = sign({}, secret, {
-      // id of user that generated the token
       subject: user.id,
-      // how long the login lasts
       expiresIn,
     });
 
-    return { user, token };
+    return {
+      user,
+      token,
+    };
   }
 }
 

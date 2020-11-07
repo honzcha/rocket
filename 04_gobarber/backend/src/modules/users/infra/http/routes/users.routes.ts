@@ -1,40 +1,36 @@
 import { Router } from 'express';
 import multer from 'multer';
-import CreateUserService from '@modules/users/services/CreateUserService';
 import uploadConfig from '@config/upload';
-import UpdateUserAvatarService from '@modules/users/services/UpdateUserAvatarService';
+import { celebrate, Segments, Joi } from 'celebrate';
+
+import UsersController from '../controllers/UsersController';
+import UserAvatarController from '../controllers/UserAvatarController';
+
 import ensureAuthenticated from '../middlewares/ensureAuthenticated';
 
 const usersRouter = Router();
-const upload = multer(uploadConfig);
+const usersController = new UsersController();
+const userAvatarController = new UserAvatarController();
 
-usersRouter.post('/', async (request, response) => {
-  const { name, email, password } = request.body;
+const upload = multer(uploadConfig.multer);
 
-  const createUser = new CreateUserService();
+usersRouter.post(
+  '/',
+  celebrate({
+    [Segments.BODY]: {
+      name: Joi.string().required(),
+      email: Joi.string().email().required(),
+      password: Joi.string().required(),
+    },
+  }),
+  usersController.create,
+);
 
-  const user = await createUser.execute({ name, email, password });
-
-  delete user.password;
-
-  return response.json(user);
-});
-
-// using the method patch because it is updating/changing only one information of the user. PUT would is used to updated the entire user data
-
-// we are not doing the ensureAuthenticated for all the routes because if a user still needs to register, he will never be able to if it requires authentication, which is only given after user sign's up
 usersRouter.patch(
   '/avatar',
   ensureAuthenticated,
   upload.single('avatar'),
-  async (request, response) => {
-    const updateUserAvatar = new UpdateUserAvatarService();
-    // console.log(request.file);
-    const user = await updateUserAvatar.execute({
-      user_id: request.user.id,
-      avatarFilename: request.file.filename,
-    });
-    return response.json(user);
-  },
+  userAvatarController.update,
 );
+
 export default usersRouter;
